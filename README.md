@@ -188,8 +188,8 @@ module virtual-machines.instance-types
    requires {"cpuutil"}  from metrics
    requires {"my-test-vpc" as vpc} from virtual-private-clouds
    requires {"test-virtual-machine-ssh-key" as ssh-key} from secrets
+where
    export declare "test-virtual-machine" of type VirtualMachineTemplate
-where     
        
       having required configuration
         cpu as 
