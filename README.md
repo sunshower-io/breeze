@@ -115,59 +115,233 @@ The BNF grammar for Breeze is present in `lang/breeze-syntax/src/main/antlr/bree
   define virtual machine
  */
  
+ /**
+   configuration type template:
+   everything is a heredoc that is templatizable
+   can be placed anywhere on the operating system (OS-specific format)
+   
+   Contents can be files downloaded from protected or unprotected urls 
+   
+   Contents can be placed into various consumers that know how to handle them.
+   
+   Scripts are executed in an environment (typically Sunshower.io/Zephyr) and can reference
+   values that are configured there.
+  */
+module configdata where
+    export declare "userdata" of type template
+        #/bin/bash
+        
+        sudo add-apt-repository {{repository default " http://repo.tld/ubuntu distro component"}}
+        sudo apt-get update
+    export delare binary of type url
+       having required configuration
+            username required from environment
+                as "tenant.aws-bucket-username"
+           password required from environment
+                as "tenant.aws-bucket-username"
+            
+/**
+  secrets are stored in the environment's secrets-manager, which is an implementation of 
+  a Zephyr plugin extension point SecretManager 
+ */
 module secrets where
-    declare "test-virtual-machine-ssh-key"
+    export declare "test-virtual-machine-ssh-key"
         of type SSHPublicKey
         having required configuration
             material required from environment 
         as "tenant.test-virtual-machine-ssh-key"
-        
+       
+/**
+  Each object, such as "VirtualPrivateCloud" is an implementation of the cloud extension-point "VirtualPrivateCloud".
+  This is resolved when the target is set on the deployment.  At that point, additional constraint-satisfication
+  is demanded from the provider and will be reported to the user as an IDE error (or a Breeze language error such as)
+  
+  error:
+    "my-test-vpc" targeting cloud provider "AWS"
+    is missing property "tenancy" of type {string, reference}
+    at module "virtual-private-clouds"
+    in required configuration "tenancy"
+ */
 module virtual-private-clouds where 
-    declare "my-test-vpc" of type VirtualPrivateCloud
+    export declare "my-test-vpc" of type VirtualPrivateCloud
         having required configuration
             networking as
                 port 8080 as ("ingress", "egress") allowing "TCP"
+        
 
+/**
+  metrics are supplied by Zephyr plugins exporting the MetricProvider interface.  They can
+  be provided authentication keys, etc. if required as part of the required configuration
+ */
+module metrics where
+    export declare "cpuutil" of type Metric
+        having required configuration
+            provider as environment.metrics.provider.cpuutilization
+
+        
+        
 module virtual-machines.instance-types where
+   requires {"userdata"} from configdata
+   requires {"cpuutil"}  from metrics
    requires {"my-test-vpc" as vpc} from virtual-private-clouds
    requires {"test-virtual-machine-ssh-key" as ssh-key} from secrets
-   declare "test-virtual-machine" of type VirtualMachine
+   export declare "test-virtual-machine" of type VirtualMachineTemplate
       having required configuration
         cpu as 
             architecture "x86"
-            count as range (12, 16)
-        operating-system as "windows"
+            count as range (12, 16) 
+                optimizable as 
+                    metric cpuutil
+                    threshold as 
+                        under anvil.lstm over "last 30 days"
+                        over anvil.lstm immediate
+        operating-system as
+            name "debian"
+            type "linux"
+            version exact "11"
+        userdata as 
+           repository as "override repository" 
         networking as
             vpc references vpc
             bandwidth as min(25gbps)
         subnets as // reference subnets
-            
-            
+      having optional configuration
+        tags as
+          environment as "test"
 
-
+   declare "test-vm-scale-group" as ScaleGroup
+        having required configuration
+            template references "test-virtual-machine"
+            minimum 1
+            maximum 4
 ```
 
+This syntax is possibly best-compared with semi-equivalent Terraform.   This is the configuration
+of just a Virtual Machine template taken from our local infrastructure definition at (https://github.com/sunshower-io/sunshower-devops/)
 
 
- 
+```terraform
+terraform {
+  required_providers {
+    dns = {
+      source = "hashicorp/dns"
+    }
+    proxmox = {
+      source = "Telmate/proxmox"
+    }
+  }
+}
+
+locals {
+  network = var.network_configuration
+  node_cfg = var.virtual_machine_configuration
+  nameservers = join(" ", var.network_configuration.nameservers)
+}
 
 
+/**
+  create all virtual machines in the cluster
+  subsequent modules will configure the virtual
+  machines based on their roles
+*/
+resource "proxmox_vm_qemu" "virtual_machines" {
+  for_each = {for vm in var.virtual_machines: "${vm.name}.${var.domain}" => vm}
+
+  /**
+    enable the QEMU agent on the virtual-machine
+  */
+  agent = each.value.enable_agent == true ? 1 : 0
+
+  /**
+    concatenation of <name> and <domain>
+    e.g. etcd1.sunshower.io
+  */
+  name = each.key
+
+  /**
+    the resource pool to allocate the VM on
+  */
+  pool = each.value.pool
+
+  /**
+    the image to use
+  */
+  clone = each.value.clone
+
+  /**
+    the host to provision the machine on
+    (e.g. "calypso" or "athena" or "demeter")
+  */
+  target_node = each.value.host
+
+  os_type = each.value.os.type
+
+  /**
+    fully clone the base image or use a linked clone
+  */
+  full_clone = each.value.full_clone
+
+  /**
+    network configuration
+  */
+  searchdomain = var.domain
+
+//  ipconfig0 = "ip=${each.value.ip}/24,gw=${local.network.gateway}"
+  ipconfig0 = "ip=dhcp"
+
+  network {
+    model = "virtio"
+    bridge = "vmbr0"
+  }
+
+  bootdisk = each.value.hardware_configuration.boot_disk
+
+  /**
+    hardware configurations
+  */
+
+  cores = each.value.hardware_configuration.cpu
+  memory = each.value.hardware_configuration.memory
+  sockets = each.value.hardware_configuration.sockets
+
+  connection {
+    type = "ssh"
+    port = self.ssh_port
+    host = self.ssh_host
+    user = local.node_cfg.username
+    password = local.node_cfg.password
+  }
+
+  provisioner "file" {
+    source = "${path.module}/scripts/if-config.sh"
+    destination = "/tmp/if-config.sh"
+  }
+  desc = each.value.ip
 
 
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/if-config.sh",
+      "/tmp/if-config.sh ${each.value.ip} ${local.network.gateway} ${local.network.netmask} '${local.nameservers}'",
+      "sudo -S -k hostnamectl set-hostname ${each.value.name}.${var.domain}",
+      "nohup bash -c 'sleep 1; shutdown -r now > restart.log'&"
+    ]
+  }
 
 
+  provisioner "local-exec" {
+    command = "${path.module}/scripts/wait-port.sh ${each.value.name} ${var.domain} 22"
+  }
 
 
+}
+```
 
+### Semantics
 
-
-
-
-
-
-
-
-
-
+Breeze object definitions described above could execute on any technology as they simply provide
+explicit constraints and references to other objects.  As Breeze is statically typed, we can evaluate
+both implicit and explicit constraints as type-judgments.  This is a fast process, and can be reported
+to the user in real time
 
 
