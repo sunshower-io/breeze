@@ -133,7 +133,7 @@ module configdata where
         
         sudo add-apt-repository {{repository default " http://repo.tld/ubuntu distro component"}}
         sudo apt-get update
-    export delare binary of type url
+    export declare binary of type url
        having required configuration
             username required from environment
                 as "tenant.aws-bucket-username"
