@@ -209,12 +209,22 @@ module virtual-machines.instance-types where
         tags as
           environment as "test"
 
-   declare "test-vm-scale-group" as ScaleGroup
+   export declare "test-vm-scale-group" as ScaleGroup
         having required configuration
             template references "test-virtual-machine"
             size as 
                minimum 1
                maximum 4
+               
+
+
+module test-scale-group where
+   export deployment "sample-vpc-with-scale-group" of type Deployment
+        targeting environment.current-cloud as
+            create infrastructure ScaleGroup as "test"
+                having required configuration authentication as
+                    credentials references environment.deployment-credentials
+                        
 ```
 
 This syntax is possibly best-compared with semi-equivalent Terraform.   This is the configuration
