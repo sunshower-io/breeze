@@ -183,12 +183,14 @@ module metrics where
 /**
   define virtual machine
  */
-module virtual-machines.instance-types where
+module virtual-machines.instance-types 
    requires {"userdata"} from configdata
    requires {"cpuutil"}  from metrics
    requires {"my-test-vpc" as vpc} from virtual-private-clouds
    requires {"test-virtual-machine-ssh-key" as ssh-key} from secrets
    export declare "test-virtual-machine" of type VirtualMachineTemplate
+where     
+       
       having required configuration
         cpu as 
             architecture "x86"
@@ -221,8 +223,9 @@ module virtual-machines.instance-types where
                
 
 
-module test-scale-group where
+module test-scale-group 
    requires {"test-vm-scale-group" as test}
+where
    export deployment "sample-vpc-with-scale-group" of type Deployment
         targeting environment.current-cloud as
             create infrastructure ScaleGroup as "my-test-environment" // actual name
