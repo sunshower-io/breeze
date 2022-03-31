@@ -212,8 +212,9 @@ module virtual-machines.instance-types where
    declare "test-vm-scale-group" as ScaleGroup
         having required configuration
             template references "test-virtual-machine"
-            minimum 1
-            maximum 4
+            size as 
+               minimum 1
+               maximum 4
 ```
 
 This syntax is possibly best-compared with semi-equivalent Terraform.   This is the configuration
