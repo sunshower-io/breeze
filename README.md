@@ -105,7 +105,7 @@ to the user.
 
 
 ### Language Definition
-The BNF grammar for Breeze is present in `lang/breeze-syntax/src/main/antlr/breeze.g4`
+The grammar for Breeze is present in `lang/breeze-syntax/src/main/antlr/breeze.g4`
 
 #### Object Definition
 
