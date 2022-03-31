@@ -395,7 +395,7 @@ where:
                
 ```
 
-While there is an obvious isomorphism between a syntax such as this (and it might be improved), the syntax
+While there is an obvious isomorphism between a syntax such as this and Breeze (and it might be improved), the syntax
 itself is cumbersome.  There is, however, a deeper reason to go with an SQL-like language.
 
 ## Infrastructure Querying!
