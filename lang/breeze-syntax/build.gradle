@@ -1,0 +1,5 @@
+apply plugin: 'antlr'
+
+dependencies {
+    antlr 'org.antlr:antlr4'
+}

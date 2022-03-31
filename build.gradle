@@ -1,0 +1,28 @@
+
+plugins {
+	id 'pmd'
+	id 'maven-publish'
+	id "com.diffplug.spotless"  apply false
+	id "com.github.spotbugs" apply false
+	id "io.spring.dependency-management" apply false
+}
+
+allprojects {
+	apply plugin: 'idea'
+	apply plugin: 'io.spring.dependency-management'
+
+	dependencyManagement {
+		imports {
+			mavenBom "io.sunshower.breeze:bom-imported:$project.version"
+		}
+	}
+
+	repositories {
+		mavenLocal()
+		mavenCentral()
+	}
+}
+
+subprojects {
+	apply plugin: 'java'
+}
