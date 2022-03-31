@@ -56,7 +56,7 @@ What does "Structured" mean in this context?  Consider Structured Query Language
 for storing and retrieving information.  As of 2022, SQL, a technology that is almost 50 years old, 
 still dominates the [data management industry](https://db-engines.com/en/ranking_categories)
 
-Part of this is certainly due to its combination of age and its improvements over preceding modules 
+Part of this is certainly due to its combination of age and its improvements over preceding paradigms 
 such as CODASYL, but the majority of it is due to its relative simplicity in conjunction with its
 expressiveness.  In particular, the _structured_ component restricts the form of data insertion and
 retrieval: modifications are always of a restricted form, e.g.:
