@@ -223,7 +223,7 @@ module test-scale-group where
    export deployment "sample-vpc-with-scale-group" of type Deployment
         targeting environment.current-cloud as
             create infrastructure ScaleGroup as "my-test-environment" // actual name
-                referencing scale-group test
+                referencing ScaleGroup test
                 having required configuration authentication as
                     credentials references environment.deployment-credentials
                         
