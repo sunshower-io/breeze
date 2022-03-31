@@ -112,7 +112,7 @@ The BNF grammar for Breeze is present in `lang/breeze-syntax/src/main/antlr/bree
 ```sql
 
 /**
-  define virtual machine
+  each module can be in its own file.  A file may declare/export multiple modules
  */
  
  /**
@@ -178,8 +178,11 @@ module metrics where
         having required configuration
             provider as environment.metrics.provider.cpuutilization
 
-        
-        
+
+
+/**
+  define virtual machine
+ */
 module virtual-machines.instance-types where
    requires {"userdata"} from configdata
    requires {"cpuutil"}  from metrics
