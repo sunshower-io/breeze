@@ -184,7 +184,7 @@ module metrics where
   define virtual machine
  */
 module virtual-machines.instance-types 
-   requires {"userdata"} from configdata
+   requires {"userdata" as vm-userdata} from configdata
    requires {"cpuutil"}  from metrics
    requires {"my-test-vpc" as vpc} from virtual-private-clouds
    requires {"test-virtual-machine-ssh-key" as ssh-key} from secrets
@@ -204,8 +204,9 @@ where
             name "debian"
             type "linux"
             version exact "11"
-        userdata as 
-           repository as "override repository" 
+        userdata references
+            vm-userdata having optonal configuration as
+              repository as "override repository" 
         networking as
             vpc references vpc
             bandwidth as min(25gbps)
