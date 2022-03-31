@@ -16,6 +16,11 @@ allprojects {
 			mavenBom "io.sunshower.breeze:bom-imported:$project.version"
 		}
 	}
+
+	repositories {
+		mavenLocal()
+		mavenCentral()
+	}
 }
 
 subprojects {
