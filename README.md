@@ -219,9 +219,11 @@ module virtual-machines.instance-types where
 
 
 module test-scale-group where
+   requires {"test-vm-scale-group" as test}
    export deployment "sample-vpc-with-scale-group" of type Deployment
         targeting environment.current-cloud as
-            create infrastructure ScaleGroup as "test"
+            create infrastructure ScaleGroup as "my-test-environment" // actual name
+                referencing scale-group test
                 having required configuration authentication as
                     credentials references environment.deployment-credentials
                         
