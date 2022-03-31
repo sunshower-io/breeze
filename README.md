@@ -139,7 +139,7 @@ module configdata where
                 as "tenant.aws-bucket-username"
            password required from environment
                 as "tenant.aws-bucket-username"
-            
+           target as "https://s3.aws.com/my/bucket/whatever" 
 /**
   secrets are stored in the environment's secrets-manager, which is an implementation of 
   a Zephyr plugin extension point SecretManager 
