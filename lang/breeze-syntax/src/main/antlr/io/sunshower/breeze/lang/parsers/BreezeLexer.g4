@@ -341,7 +341,6 @@ BinaryExponentIndicator
 	:	[pP]
 	;
 
-// §3.10.3 Boolean Literals
 
 BooleanLiteral
 	:	'true'

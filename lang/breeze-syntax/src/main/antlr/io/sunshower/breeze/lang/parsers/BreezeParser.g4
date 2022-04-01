@@ -97,6 +97,7 @@ functionDeclaration:
 
 argument:
   StringLiteral
+  | BooleanLiteral
   | NumericLiteral
   ;
 
