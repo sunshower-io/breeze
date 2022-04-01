@@ -1,5 +1,9 @@
 lexer grammar BreezeLexer;
 
+@header {
+  package io.sunshower.breeze.lang.parsers;
+}
+
 /**
 tokens
 */

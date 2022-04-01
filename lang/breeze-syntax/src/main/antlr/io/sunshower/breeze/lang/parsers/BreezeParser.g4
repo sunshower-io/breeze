@@ -1,5 +1,9 @@
 parser grammar BreezeParser;
 
+@header {
+  package io.sunshower.breeze.lang.parsers;
+}
+
 options {
   tokenVocab = BreezeLexer;
 }
