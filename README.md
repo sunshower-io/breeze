@@ -440,7 +440,7 @@ module vms
         that will be satisfied by a combination of a Fulfillment (provided by a plugin such as Azure)
         and user-supplied properties
     */
-    export declare VirtualMachine of type ExtensionPoint 
+    export declare extension point VirtualMachine 
         /**
           Required constraints that are unsatisfied will
           be reported by the compiler to the user 
@@ -476,7 +476,8 @@ module vms
         having required properties 
             name of type String or StringReference
             image of type String or StringReference
-            userName of type String or StringReference
+            userName of type String or StringReference;
+            
 ```
 
 

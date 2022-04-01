@@ -30,6 +30,17 @@ declarations:
 
 
 declaration:
+  objectDeclaration
+  | extensionPointDeclaration;
+
+extensionPointDeclaration:
+  EXPORT? DECLARE
+  EXTENSION POINT
+  identifier
+  ;
+
+
+objectDeclaration:
   EXPORT?
     DECLARE
     objectDefinition
@@ -48,6 +59,27 @@ objectDefinition:
 configurationDefinitions:
   configurationDefinition+;
 
+
+
+constraintDefinition:
+  HAVING (
+    OPTIONAL | REQUIRED
+  )? constraints;
+
+
+constraints:
+  constraint+;
+
+constraint:
+  identifier
+    OF TYPE (identifier | collection);
+
+
+collection:
+  identifier
+    OPEN_BRACKET
+    CLOSE_BRACKET
+    ;
 
 
 configurationDefinition:

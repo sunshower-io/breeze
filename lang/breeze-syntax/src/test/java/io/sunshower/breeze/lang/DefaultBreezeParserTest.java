@@ -105,4 +105,70 @@ class DefaultBreezeParserTest {
 
     parser.printTree(System.out);
   }
+
+  @Test
+  void ensureParsingCompleteExtensionPointWorks() {
+    val def = """
+        module vms 
+    requires {Disk} from storage 
+    requires {
+        Network, 
+        SecurityGroup,
+        VirtualPrivateCloud as VPC 
+    } from networks
+    where
+    
+            declare "test-virtual-machine-ssh-key"
+                of type SSHPublicKey
+                having required configuration
+                    material references sup 
+                      having required configuration
+                        name as "value";
+    /**
+        an ExtensionPoint is a collection of properties and constraints
+        that will be satisfied by a combination of a Fulfillment (provided by a plugin such as Azure)
+        and user-supplied properties
+    */
+    export declare extension point VirtualMachine 
+        /**
+          Required constraints that are unsatisfied will
+          be reported by the compiler to the user 
+         */
+        having required constraints
+            /**
+              we generally need a network.  A cloud provider can supply this with a
+              default
+             */
+            child of type Network
+            /**
+              we need a boot disk.  A cloud provider can supply a default
+             */
+            child of type Disk
+            /**
+              
+             */
+            parent of type VPC
+            /**
+              we need a firewall/security group
+             */
+            sibling of type SecurityGroup
+        /**
+          
+         */
+        having optional constraints
+            disks of type Disk[]
+            subnetworks of type Network[]
+        
+   /**
+     
+    */
+        having required properties 
+            name of type String or StringReference
+            image of type String or StringReference
+            userName of type String or StringReference;
+        """;
+    val result = Parser.parse(def);
+    result.printTree(System.out);
+
+  }
 }

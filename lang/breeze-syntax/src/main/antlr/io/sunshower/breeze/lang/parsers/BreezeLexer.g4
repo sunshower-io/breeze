@@ -73,6 +73,18 @@ REFERENCES:
 OPTIONAL:
   'optional';
 
+EXTENSION:
+  'extension';
+
+POINT:
+  'point';
+
+OPEN_BRACKET:
+  '[';
+
+CLOSE_BRACKET:
+  ']';
+
 
 /**
   keyword: required
