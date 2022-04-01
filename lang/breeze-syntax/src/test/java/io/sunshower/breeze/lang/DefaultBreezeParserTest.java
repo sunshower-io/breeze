@@ -68,7 +68,7 @@ class DefaultBreezeParserTest {
   void ensureParsingModuleWithMultipleDefinitionsWorks() {
     val moduleDefinition =
         """
-        module secrets 
+        module secrets.dont.make.friends
           requires {cool as bean} from whatever
           requires {bean as superbean} from coolbean
         where
