@@ -7,6 +7,7 @@ dependencies {
 
 generateGrammarSource {
     arguments << "-lib" << "src/main/antlr/io/sunshower/breeze/lang/parsers"
+    arguments << "-visitor"
 }
 
 build.dependsOn generateGrammarSource
