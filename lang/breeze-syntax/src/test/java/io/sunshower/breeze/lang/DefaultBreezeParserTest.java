@@ -34,7 +34,8 @@ class DefaultBreezeParserTest {
 
   @Test
   void ensureParsingCompleteSimpleDeclarationWorks() {
-    val moduleDefinition = """
+    val moduleDefinition =
+        """
         module secrets where
             export declare "test-virtual-machine-ssh-key"
                 of type SSHPublicKey
@@ -45,8 +46,5 @@ class DefaultBreezeParserTest {
     parser = (DefaultBreezeParser) Parser.parse(moduleDefinition);
 
     parser.printTree(System.out);
-
-
   }
-
 }

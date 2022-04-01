@@ -54,7 +54,6 @@ final class DefaultBreezeParser implements Parser, ANTLRErrorListener {
         printTree(out, tree.getChild(i), indent + 1);
       }
     }
-
   }
 
   /**
@@ -68,26 +67,42 @@ final class DefaultBreezeParser implements Parser, ANTLRErrorListener {
    * @param e
    */
   @Override
-  public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
-      int charPositionInLine, String msg, RecognitionException e) {
-    throw new RuntimeException("Parse error at (line: %d, character: %d): %s ".formatted(line, charPositionInLine, msg));
+  public void syntaxError(
+      Recognizer<?, ?> recognizer,
+      Object offendingSymbol,
+      int line,
+      int charPositionInLine,
+      String msg,
+      RecognitionException e) {
+    throw new RuntimeException(
+        "Parse error at (line: %d, character: %d): %s ".formatted(line, charPositionInLine, msg));
   }
 
   @Override
-  public void reportAmbiguity(org.antlr.v4.runtime.Parser recognizer, DFA dfa, int startIndex,
-      int stopIndex, boolean exact, BitSet ambigAlts, ATNConfigSet configs) {
-
-  }
-
-  @Override
-  public void reportAttemptingFullContext(org.antlr.v4.runtime.Parser recognizer, DFA dfa,
-      int startIndex, int stopIndex, BitSet conflictingAlts, ATNConfigSet configs) {
-
-  }
+  public void reportAmbiguity(
+      org.antlr.v4.runtime.Parser recognizer,
+      DFA dfa,
+      int startIndex,
+      int stopIndex,
+      boolean exact,
+      BitSet ambigAlts,
+      ATNConfigSet configs) {}
 
   @Override
-  public void reportContextSensitivity(org.antlr.v4.runtime.Parser recognizer, DFA dfa,
-      int startIndex, int stopIndex, int prediction, ATNConfigSet configs) {
+  public void reportAttemptingFullContext(
+      org.antlr.v4.runtime.Parser recognizer,
+      DFA dfa,
+      int startIndex,
+      int stopIndex,
+      BitSet conflictingAlts,
+      ATNConfigSet configs) {}
 
-  }
+  @Override
+  public void reportContextSensitivity(
+      org.antlr.v4.runtime.Parser recognizer,
+      DFA dfa,
+      int startIndex,
+      int stopIndex,
+      int prediction,
+      ATNConfigSet configs) {}
 }
