@@ -8,11 +8,16 @@ import java.nio.charset.Charset;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-public class DefaultBreezeParser {
+final class DefaultBreezeParser implements Parser {
 
-  private final BreezeParser parser;
+  final BreezeParser parser;
 
-  public DefaultBreezeParser(Charset charset, InputStream inputStream) throws IOException {
+  DefaultBreezeParser(String value) {
+    parser =
+        new BreezeParser(new CommonTokenStream(new BreezeLexer(CharStreams.fromString(value))));
+  }
+
+  DefaultBreezeParser(Charset charset, InputStream inputStream) throws IOException {
     parser =
         new BreezeParser(
             new CommonTokenStream(new BreezeLexer(CharStreams.fromStream(inputStream, charset))));

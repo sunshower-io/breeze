@@ -179,8 +179,6 @@ subprojects {
 			testAnnotationProcessor 'org.projectlombok:lombok'
 
 
-			testImplementation 'org.mockito:mockito-inline'
-			testImplementation 'org.mockito:mockito-junit-jupiter'
 			testImplementation 'org.junit.jupiter:junit-jupiter-params'
 
 			[
