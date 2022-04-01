@@ -1,0 +1,13 @@
+
+
+
+
+
+module virtual-private-clouds where
+  export declare "my-test-vpc"
+    of type VirtualPrivateCloud
+      having required configuration
+        networking as
+          port 8080 as ('ingress', 'egress') allowing 'TCP';
+
+
