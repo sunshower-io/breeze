@@ -33,9 +33,8 @@ declaration:
   EXPORT?
     DECLARE
     objectDefinition
-    SEMI_COLON;
-//      identifier OF TYPE
-//      identifier
+    SEMI_COLON
+  ;
 
 
 
@@ -43,7 +42,6 @@ objectDefinition:
   identifier
     OF TYPE
   identifier
-    HAVING
     configurationDefinitions;
 
 
@@ -60,15 +58,16 @@ configurationDefinition:
 
 
 configuration:
-  stringConfiguration
-  referenceConfiguration
-  functionConfiguration
+  CONFIGURATION (
+    | referenceConfiguration
+    | stringConfiguration
+    | functionConfiguration
+  )
   ;
 
 
 referenceConfiguration:
-  REFERENCES
-    identifier
+  identifier REFERENCES identifier
   configurationDefinition?
   ;
 

@@ -27,6 +27,7 @@ final class DefaultBreezeParser implements Parser, ANTLRErrorListener {
     parser =
         new BreezeParser(new CommonTokenStream(new BreezeLexer(CharStreams.fromString(value))));
     parser.setBuildParseTree(true);
+    parser.addErrorListener(this);
   }
 
   DefaultBreezeParser(Charset charset, InputStream inputStream) throws IOException {
@@ -34,6 +35,7 @@ final class DefaultBreezeParser implements Parser, ANTLRErrorListener {
         new BreezeParser(
             new CommonTokenStream(new BreezeLexer(CharStreams.fromStream(inputStream, charset))));
     parser.setBuildParseTree(true);
+    parser.addErrorListener(this);
   }
 
   @Override
@@ -46,7 +48,9 @@ final class DefaultBreezeParser implements Parser, ANTLRErrorListener {
   private void printTree(PrintWriter out, Tree tree, int indent) {
     val prefix = " ".repeat(indent);
     out.write(prefix);
-    out.write(Trees.getNodeText(tree, parser));
+    out.write(
+        Trees.getNodeText(tree, parser)
+    );
 
     if (tree.getChildCount() != 0) {
       out.append("\n");

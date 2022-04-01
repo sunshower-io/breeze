@@ -40,7 +40,65 @@ class DefaultBreezeParserTest {
             export declare "test-virtual-machine-ssh-key"
                 of type SSHPublicKey
                 having required configuration
-                    material required as "sup";
+                    material as "sup";
+        """;
+
+    parser = (DefaultBreezeParser) Parser.parse(moduleDefinition);
+
+    parser.printTree(System.out);
+  }
+
+  @Test
+  void ensureParsingModuleWithReferenceWorks() {
+    val moduleDefinition =
+        """
+        module secrets where
+            export declare "test-virtual-machine-ssh-key"
+                of type SSHPublicKey
+                having required configuration
+                    material references sup;
+        """;
+
+    parser = (DefaultBreezeParser) Parser.parse(moduleDefinition);
+
+    parser.printTree(System.out);
+  }
+
+  @Test
+  void ensureParsingModuleWithMultipleDefinitionsWorks() {
+    val moduleDefinition =
+        """
+        module secrets 
+          requires {cool as bean} from whatever
+          requires {bean as superbean} from coolbean
+        where
+            export declare "test-virtual-machine-ssh-key"
+                of type SSHPublicKey
+                having required configuration
+                    material references sup 
+                      having required configuration
+                        name as "value";
+            export declare whatever of type unit
+              having optional configuration sup
+                material as "coolbeans";            
+        """;
+
+    parser = (DefaultBreezeParser) Parser.parse(moduleDefinition);
+
+    parser.printTree(System.out);
+  }
+
+  @Test
+  void ensureParsingModuleWithReferenceWorksWithSubConfiguration() {
+    val moduleDefinition =
+        """
+        module secrets where
+            export declare "test-virtual-machine-ssh-key"
+                of type SSHPublicKey
+                having required configuration
+                    material references sup 
+                      having required configuration
+                        name as "value";
         """;
 
     parser = (DefaultBreezeParser) Parser.parse(moduleDefinition);
