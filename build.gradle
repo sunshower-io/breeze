@@ -1,28 +1,211 @@
-
 plugins {
 	id 'pmd'
 	id 'maven-publish'
-	id "com.diffplug.spotless"  apply false
-	id "com.github.spotbugs" apply false
-	id "io.spring.dependency-management" apply false
+	id "com.diffplug.spotless" version "6.1.0"
+	id "com.github.spotbugs" version "4.7.0"
+	id "org.springframework.boot" version "2.6.2" apply false
+	id "io.spring.dependency-management" version "1.0.11.RELEASE"
 }
+
+apply plugin: 'java'
+
 
 allprojects {
 	apply plugin: 'idea'
-	apply plugin: 'io.spring.dependency-management'
-
+	apply plugin: "com.diffplug.spotless"
+	apply plugin: "io.spring.dependency-management"
 	dependencyManagement {
 		imports {
 			mavenBom "io.sunshower.breeze:bom-imported:$project.version"
 		}
 	}
 
+
 	repositories {
 		mavenLocal()
 		mavenCentral()
+		maven {
+			url "https://repository.mulesoft.org/nexus/content/repositories/public/"
+		}
 	}
+
+
 }
 
 subprojects {
-	apply plugin: 'java'
+
+	apply plugin: 'maven-publish'
+	publishing {
+		repositories {
+			maven {
+				credentials {
+					username "$mavenRepositoryUsername"
+					password "$mavenRepositoryPassword"
+				}
+				url "$mavenRepositoryUrl"
+			}
+		}
+	}
+
+	spotbugs {
+		toolVersion = '4.5.3'
+	}
+
+	tasks.withType(Test) {
+		maxParallelForks = 1
+	}
+	plugins.withType(WarPlugin) {
+		configurations {
+			plugin {
+				transitive = false
+				extendsFrom implementation
+			}
+		}
+
+
+//        tasks.withType(com.github.spotbugs.SpotBugsTask) {
+//            reports {
+//                xml.enabled = false
+//                html.enabled = true
+//            }
+//        }
+		pmd {
+			toolVersion = '6.34.0'
+			ruleSets = [
+					"${project.rootDir}/check/pmd/rules/errorprone.xml",
+					"category/java/multithreading.xml",
+					"category/java/bestpractices.xml",
+					"category/java/performance.xml"
+			]
+
+		}
+
+		publishing {
+			publications {
+				pluginMaven(MavenPublication) {
+					from components.web
+				}
+			}
+		}
+	}
+
+
+	plugins.withType(JavaPlugin) {
+
+
+		task packageJavadocs(type: Jar, dependsOn: 'javadoc') {
+			classifier 'javadoc'
+			version project.version
+			from javadoc.destinationDir
+		}
+
+		task sourceJar(type: Jar) {
+			from sourceSets.main.allJava
+		}
+
+
+		javadoc {
+			source = sourceSets.main.allJava
+			classpath += configurations.runtimeClasspath
+			options.addBooleanOption('html5', true)
+		}
+
+
+		publishing {
+			publications {
+
+				pluginMaven(MavenPublication) {
+					artifact tasks.jar
+					versionMapping {
+						usage('java-api') {
+							fromResolutionOf('runtimeClasspath')
+						}
+						usage('java-runtime') {
+							fromResolutionResult()
+						}
+					}
+				}
+
+				pluginMaven(MavenPublication) {
+					artifact(tasks.packageJavadocs) {
+						classifier = 'javadocs'
+					}
+					artifact sourceJar {
+						classifier "sources"
+					}
+					versionMapping {
+						usage('java-api') {
+							fromResolutionOf('runtimeClasspath')
+						}
+						usage('java-runtime') {
+							fromResolutionResult()
+						}
+					}
+				}
+			}
+		}
+
+
+		tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
+			reports {
+				xml.enabled = false
+				html.enabled = true
+			}
+		}
+		pmd {
+			toolVersion = '6.34.0'
+			ruleSets = [
+					"${project.rootDir}/check/pmd/rules/errorprone.xml",
+					"category/java/multithreading.xml",
+					"category/java/bestpractices.xml",
+					"category/java/performance.xml"
+			]
+
+		}
+
+		test {
+			useJUnitPlatform()
+		}
+		spotless {
+			java {
+				googleJavaFormat('1.12.0')
+				target project.fileTree(project.rootDir) {
+					include '**/*.java'
+					exclude 'build/generated-src/**/*.*'
+				}
+			}
+		}
+
+		dependencies {
+			compileOnly 'org.projectlombok:lombok'
+			testCompileOnly 'org.projectlombok:lombok'
+			annotationProcessor 'org.projectlombok:lombok'
+			testAnnotationProcessor 'org.projectlombok:lombok'
+
+
+			testImplementation 'org.junit.jupiter:junit-jupiter-params'
+
+			[
+					'api',
+					'engine'
+
+			].each { dep ->
+				testImplementation "org.junit.jupiter:junit-jupiter-$dep"
+				testImplementation "org.junit.platform:junit-platform-suite-$dep"
+			}
+		}
+	}
+
 }
+
+defaultTasks(
+		'clean',
+		'assemble',
+		'build',
+		'spotlessApply',
+		'javadoc',
+		'publishToMavenLocal'
+)
+
+
+build.dependsOn assemble

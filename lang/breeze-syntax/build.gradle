@@ -3,3 +3,12 @@ apply plugin: 'antlr'
 dependencies {
     antlr 'org.antlr:antlr4'
 }
+
+
+generateGrammarSource {
+    arguments << "-lib" << "src/main/antlr/io/sunshower/breeze/lang/parsers"
+    arguments << "-visitor"
+}
+
+build.dependsOn generateGrammarSource
+build.mustRunAfter generateGrammarSource
