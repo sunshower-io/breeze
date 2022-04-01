@@ -169,6 +169,10 @@ subprojects {
 		spotless {
 			java {
 				googleJavaFormat('1.12.0')
+				target project.fileTree(project.rootDir) {
+					include '**/*.java'
+					exclude 'build/generated-src/**/*.*'
+				}
 			}
 		}
 
