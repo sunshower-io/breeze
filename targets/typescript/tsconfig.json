@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "moduleResolution": "node",
+    "baseUrl": "./",
+    "paths": {
+      "breeze/grammar/*": [
+        "grammar/src/main/antlr/breeze/*"
+      ],
+      "breeze/lang/*": [
+        "src/main/typescript/breeze/*"
+      ]
+    },
+    "rootDirs": [
+      "src/main/typescript",
+      "grammar/src/main/antlr"
+    ]
+  }
+}

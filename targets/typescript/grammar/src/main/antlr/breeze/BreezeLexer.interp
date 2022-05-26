@@ -1,0 +1,20 @@
+token literal names:
+null
+'module'
+
+token symbolic names:
+null
+MODULE
+
+rule names:
+MODULE
+
+channel names:
+DEFAULT_TOKEN_CHANNEL
+HIDDEN
+
+mode names:
+DEFAULT_MODE
+
+atn:
+[3, 51485, 51898, 1421, 44986, 20307, 1543, 60043, 49729, 2, 3, 12, 8, 1, 4, 2, 9, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 2, 2, 2, 3, 3, 2, 3, 3, 2, 2, 2, 11, 2, 3, 3, 2, 2, 2, 3, 5, 3, 2, 2, 2, 5, 6, 7, 111, 2, 2, 6, 7, 7, 113, 2, 2, 7, 8, 7, 102, 2, 2, 8, 9, 7, 119, 2, 2, 9, 10, 7, 110, 2, 2, 10, 11, 7, 103, 2, 2, 11, 4, 3, 2, 2, 2, 3, 2, 2]
