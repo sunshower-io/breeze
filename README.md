@@ -480,6 +480,9 @@ module vms
             
 ```
 
+Before any action can be performed on a type with any constraints
+
+
 
 
 

@@ -48,9 +48,7 @@ final class DefaultBreezeParser implements Parser, ANTLRErrorListener {
   private void printTree(PrintWriter out, Tree tree, int indent) {
     val prefix = " ".repeat(indent);
     out.write(prefix);
-    out.write(
-        Trees.getNodeText(tree, parser)
-    );
+    out.write(Trees.getNodeText(tree, parser));
 
     if (tree.getChildCount() != 0) {
       out.append("\n");

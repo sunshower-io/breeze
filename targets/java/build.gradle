@@ -1,0 +1,16 @@
+apply plugin: 'java'
+apply plugin: 'antlr'
+
+dependencies {
+    antlr 'org.antlr:antlr4'
+}
+
+generateGrammarSource {
+    arguments << "-visitor"
+    arguments
+            << "-lib"
+            << "${project.rootDir}/grammar/src/main/antlr/breeze"
+}
+
+build.dependsOn generateGrammarSource
+build.mustRunAfter generateGrammarSource

@@ -75,12 +75,12 @@ class DefaultBreezeParserTest {
             export declare "test-virtual-machine-ssh-key"
                 of type SSHPublicKey
                 having required configuration
-                    material references sup 
+                    material references sup
                       having required configuration
                         name as "value";
             export declare whatever of type unit
               having optional configuration sup
-                material as "coolbeans";            
+                material as "coolbeans";
         """;
 
     parser = (DefaultBreezeParser) Parser.parse(moduleDefinition);
@@ -96,7 +96,7 @@ class DefaultBreezeParserTest {
             export declare "test-virtual-machine-ssh-key"
                 of type SSHPublicKey
                 having required configuration
-                    material references sup 
+                    material references sup
                       having required configuration
                         name as "value";
         """;
@@ -108,20 +108,21 @@ class DefaultBreezeParserTest {
 
   @Test
   void ensureParsingCompleteExtensionPointWorks() {
-    val def = """
-        module vms 
-    requires {Disk} from storage 
+    val def =
+        """
+        module vms
+    requires {Disk} from storage
     requires {
-        Network, 
+        Network,
         SecurityGroup,
-        VirtualPrivateCloud as VPC 
+        VirtualPrivateCloud as VPC
     } from networks
     where
-    
+
             declare "test-virtual-machine-ssh-key"
                 of type SSHPublicKey
                 having required configuration
-                    material references sup 
+                    material references sup
                       having required configuration
                         name as "value";
     /**
@@ -129,10 +130,10 @@ class DefaultBreezeParserTest {
         that will be satisfied by a combination of a Fulfillment (provided by a plugin such as Azure)
         and user-supplied properties
     */
-    export declare extension point VirtualMachine 
+    export declare extension point VirtualMachine
         /**
           Required constraints that are unsatisfied will
-          be reported by the compiler to the user 
+          be reported by the compiler to the user
          */
         having required constraints
             /**
@@ -145,7 +146,7 @@ class DefaultBreezeParserTest {
              */
             child of type Disk
             /**
-              
+
              */
             parent of type VPC
             /**
@@ -153,22 +154,21 @@ class DefaultBreezeParserTest {
              */
             sibling of type SecurityGroup
         /**
-          
+
          */
         having optional constraints
             disks of type Disk[]
             subnetworks of type Network[]
-        
+
    /**
-     
+
     */
-        having required properties 
+        having required properties
             name of type String or StringReference
             image of type String or StringReference
             userName of type String or StringReference;
         """;
     val result = Parser.parse(def);
     result.printTree(System.out);
-
   }
 }

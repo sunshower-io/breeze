@@ -36,7 +36,10 @@ declaration:
 extensionPointDeclaration:
   EXPORT? DECLARE
   EXTENSION POINT
-  identifier
+  identifier (
+      constraintDefinition
+      | configurationDefinition
+    )+
   ;
 
 
@@ -110,6 +113,9 @@ stringConfiguration:
   identifier AS StringLiteral
   ;
 
+/**
+ declare a((x + y) + x as b)
+*/
 
 functionConfiguration:
   identifier
