@@ -1,0 +1,44 @@
+
+@top Program {
+  Block*
+}
+
+Block {
+  Argument |
+  blockPrelude {
+    "{" Block+ "}"
+  }
+}
+
+blockPrelude {
+  Identifier quotedIdentifier+
+}
+
+quotedIdentifier {
+  '"' Identifier '"'
+}
+
+Function {
+  identifier "(" (literal ",")* literal ")"
+}
+
+literal {
+  String | Number | Boolean
+}
+
+Argument {
+  Identifier '=' literal
+}
+
+@tokens {
+    Identifier { $[a-zA-Z_0-9]+ }
+    String { '"' (!["\\] | "\\" _)* '"' }
+    Boolean { "true" | "false" }
+    Number { $[0-9]+ }
+    space { $[ \t\n\r]+ }
+    ","
+    "(" ")"
+    "{" "}"
+
+}
+

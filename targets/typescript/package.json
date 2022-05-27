@@ -2,14 +2,17 @@
   "name": "@sunshower/breeze-lang",
   "version": "0.0.0",
   "description": "Breeze Language Parser for TypeScript",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
-    "antlr": "antlr4ts ../../grammar/src/main/antlr/breeze/BreezeParser.g4  ../../grammar/src/main/antlr/breeze/BreezeLexer.g4 -o ./src/main"
+    "antlr": "antlr4ts ../../grammar/src/main/antlr/breeze/BreezeParser.g4  ../../grammar/src/main/antlr/breeze/BreezeLexer.g4 -o ./src/main",
+    "lezer": "lezer-generator ../../grammar/src/main/lezer/breeze/Breeze.grammar -o ./src/main/generated/breeze/breeze-parser.js",
+    "build": "npm run lezer && rollup -c rollup.config.ts"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sunshower-io/breeze.git"
   },
+  "typings": "./src/main/typescript/breeze/breeze-parser.ts",
   "keywords": [
     "Infrastructure-as-Code",
     "Sunshower",
@@ -25,11 +28,14 @@
   },
   "homepage": "https://github.com/sunshower-io/breeze#readme",
   "devDependencies": {
+    "@lezer/generator": "^0.16.0",
     "@types/jest": "^27.5.1",
     "@types/node": "^17.0.35",
     "antlr4ts": "^0.5.0-alpha.4",
     "antlr4ts-cli": "^0.5.0-alpha.4",
     "jest": "^28.1.0",
+    "rollup-plugin-dts": "^4.2.2",
+    "rollup-plugin-typescript2": "^0.31.2",
     "ts-jest": "^28.0.3",
     "ts-node": "^10.8.0",
     "typescript": "^4.7.2"
@@ -46,5 +52,10 @@
     "transform": {
       "^.+\\.ts?$": "ts-jest"
     }
+  },
+  "dependencies": {
+    "@lezer/common": "^0.16.0",
+    "@lezer/highlight": "^0.16.0",
+    "@lezer/lr": "^0.16.3"
   }
 }

@@ -1,8 +1,5 @@
-import {BreezeLexer} from "breeze/grammar/BreezeLexer";
-import {BreezeParser} from "breeze/grammar/BreezeParser";
+import {parser} from "breeze/parser/breeze-parser"
 
-export function parse(document: string) {
-  console.log(BreezeParser);
-  console.log(BreezeLexer);
 
-}
+export {parser} from "breeze/parser/breeze-parser"
+export * from "breeze/parser/breeze-parser.terms"

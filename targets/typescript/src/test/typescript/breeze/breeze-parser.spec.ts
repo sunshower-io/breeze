@@ -1,7 +1,5 @@
-import {parse} from "breeze/lang/breeze-parser";
+import {parser} from "breeze/lang/breeze-parser";
 
 
 test('hello', () => {
-  parse("hello");
-
 });

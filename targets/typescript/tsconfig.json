@@ -1,18 +1,26 @@
 {
   "compilerOptions": {
     "target": "es2019",
+    "declaration": true,
+    "declarationDir": "build",
+    "outDir": "build",
     "moduleResolution": "node",
     "baseUrl": "./",
+    "allowJs": true,
     "paths": {
       "breeze/grammar/*": [
         "grammar/src/main/antlr/breeze/*"
       ],
       "breeze/lang/*": [
         "src/main/typescript/breeze/*"
+      ],
+      "breeze/parser/*": [
+        "src/main/generated/breeze/*"
       ]
     },
     "rootDirs": [
       "src/main/typescript",
+      "src/main/generated",
       "grammar/src/main/antlr"
     ]
   }
