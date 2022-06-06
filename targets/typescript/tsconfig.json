@@ -7,14 +7,24 @@
     "moduleResolution": "node",
     "baseUrl": "./",
     "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "plugins": [
+      {
+        "transform": "@zerollup/ts-transform-paths"
+      },
+      {
+        "transform": "@zerollup/ts-transform-paths",
+        "afterDeclarations": true
+      }
+    ],
     "paths": {
-      "breeze/grammar/*": [
+      "@breeze/grammar/*": [
         "grammar/src/main/antlr/breeze/*"
       ],
-      "breeze/lang/*": [
+      "@breeze/lang/*": [
         "src/main/typescript/breeze/*"
       ],
-      "breeze/parser/*": [
+      "@breeze/parser/*": [
         "src/main/generated/breeze/*"
       ]
     },
