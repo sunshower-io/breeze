@@ -6,9 +6,9 @@
   "watch": {
     "build": {
       "patterns": [
-        "src"
+        "src","../../grammar"
       ],
-      "extensions": "ts"
+      "extensions": "ts,grammar"
     }
   },
   "scripts": {

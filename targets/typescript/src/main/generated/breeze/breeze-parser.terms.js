@@ -3,7 +3,8 @@ export const
   Program = 1,
   Block = 2,
   Argument = 3,
-  Identifier = 4,
-  String = 5,
-  Number = 6,
-  Boolean = 7
+  Keyword = 4,
+  ControlKeyword = 8,
+  String = 10,
+  Number = 11,
+  Boolean = 12

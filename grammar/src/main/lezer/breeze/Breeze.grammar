@@ -1,3 +1,4 @@
+
 @top Program {
   Block*
 }
@@ -9,12 +10,31 @@ Block {
   }
 }
 
+
+Argument {
+  Keyword '=' literal |
+  identifier '=' literal
+}
+
+Keyword {
+  kw<"module"> |
+  kw<"provider"> |
+  kw<"resource"> |
+  ControlKeyword
+}
+
+ControlKeyword {
+  kw<"var">
+}
+
+
+
 blockPrelude {
-  Identifier quotedIdentifier+
+  Keyword quotedIdentifier+
 }
 
 quotedIdentifier {
-  '"' Identifier '"'
+  '"' identifier '"'
 }
 
 Function {
@@ -25,19 +45,19 @@ literal {
   String | Number | Boolean
 }
 
-Argument {
-  Identifier '=' literal
-}
+kw<term> { @specialize[@name={term}]<identifier, term> }
+
+
 
 @tokens {
-    Identifier { $[a-zA-Z_0-9]+ }
-    String { '"' (!["\\] | "\\" _)* '"' }
-    Boolean { "true" | "false" }
-    Number { $[0-9]+ }
-    space { $[ \t\n\r]+ }
-    ","
-    "(" ")"
-    "{" "}"
+ identifier { $[a-zA-Z_0-9]+ }
+ String { '"' (!["\\] | "\\" _)* '"' }
+ Boolean { "true" | "false" }
+ Number { $[0-9]+ }
+ Space { $[ \t\n\r]+ }
+ ","
+ "(" ")"
+ "{" "}"
 
 }
 

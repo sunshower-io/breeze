@@ -5,24 +5,43 @@ import {
   HighlightStyle,
   indentNodeProp,
   LanguageSupport,
-  LRLanguage
+  LRLanguage,
+  syntaxHighlighting
 } from "@codemirror/language"
 import {EditorView, lineNumbers} from "@codemirror/view";
-import {styleTags, tags as t} from "@lezer/highlight"
+import {styleTags, Tag, tags as t} from "@lezer/highlight"
 import {EditorState} from "@codemirror/state";
 import {basicSetup} from "@codemirror/basic-setup";
 import {completeFromList} from '@codemirror/autocomplete'
 
+
+type mapping = { [selector: string]: Tag | Tag[] }
+
+const configureSet = (cfg: mapping, es: string[], t: Tag): mapping => {
+  for (let e of es) {
+    cfg[e] = t;
+  }
+  return cfg;
+}
+
+
+const cfg = configureSet({
+  Boolean: t.bool,
+  String: t.string,
+  Number: t.number,
+  "{ }": t.paren
+}, [
+  'provider',
+  'module',
+  'resource',
+], t.keyword);
+
+configureSet(cfg, ['var'], t.controlKeyword)
+
+
 export const parserWithMetadata = parser.configure({
   props: [
-    styleTags({
-      Identifier: t.variableName,
-      Boolean: t.bool,
-      String: t.string,
-      LineComment: t.lineComment,
-      Number: t.number,
-      "{ }": t.paren
-    }),
+    styleTags(cfg),
     indentNodeProp.add({
       Block: context => {
         // context.node.
@@ -43,27 +62,23 @@ export const parserWithMetadata = parser.configure({
 
 
 const highlightStyle = HighlightStyle.define([
-  {tag: t.keyword, color: "orange", fontStyle: 'bold'},
-  {tag: t.definitionKeyword, color: "green", fontStyle: 'bold'},
+  {tag: t.keyword, color: 'orange'},
+  {tag: t.controlKeyword, color: 'green'},
   {tag: t.string, color: "blue", fontStyle: 'italic'},
-  {tag: t.definitionKeyword, color: "green"},
-
-  {tag: t.bool, color: "red", fontStyle: 'bold'},
-  {tag: t.comment, color: "#f5d", fontStyle: "italic"}
 ])
 
 
 export const terraformLanguage = LRLanguage.define({
   parser: parserWithMetadata,
   languageData: {
-    commentTokens: {line: "//"}
+    commentTokens: {line: "//", block: {start: '/*', end: '*/'}}
   }
 });
 export const terraformCompletion = terraformLanguage.data.of({
   autocomplete: completeFromList([
+    {label: "module", type: "keyword"},
     {label: "resource", type: "definition"},
     {label: "provider", type: "keyword"},
-    {label: "module", type: "keyword"},
     {label: "variable", type: "keyword"},
     {label: "output", type: "keyword"},
     {label: "average", type: "function"},
@@ -79,11 +94,16 @@ export function terraformLanguageSupport(): LanguageSupport {
 
 export function terraform(root: ShadowRoot): EditorView {
   const state = EditorState.create({
-    extensions: [basicSetup, lineNumbers(), terraformLanguageSupport()]
+    extensions: [
+      basicSetup,
+      lineNumbers(),
+      terraformLanguageSupport(),
+      syntaxHighlighting(highlightStyle)
+    ]
   });
   return new EditorView({
     state: state,
-    parent: root
+    parent: root,
   });
 }
 
