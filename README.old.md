@@ -31,6 +31,7 @@ addressed, frequently by one or more of the products detailed above:
 3. Application Management:
    1. Deployment: How do I deploy my application/services to the cloud?
       1. Examples: Kubernetes, CloudFormation, Sunshower.io, Pulumi, Chef, Puppet, Salt
+
 TK: finish enumeration
 
 The proliferation of products and services (usually consulting or paid SaaS) has resulted in deep
@@ -131,7 +132,7 @@ module configdata where
     export declare "userdata" of type template
         #/bin/bash
         
-        sudo add-apt-repository {{repository default " http://repo.tld/ubuntu distro component"}}
+        sudo add-apt-repository {{repository default "http://repo.tld/ubuntu distro component"}}
         sudo apt-get update
     export declare binary of type url
        having required configuration
